@@ -313,7 +313,7 @@ int RECORDER_DECL(creat)(const char *path, mode_t mode) {
   tm1 = recorder_wtime();
 
   if (__recorderfh != NULL)
-    fprintf(__recorderfh, "%.5f creat (%s, %d)", tm1, path, mode);
+    fprintf(__recorderfh, "%.5f creat (%s, %o)", tm1, path, mode);
 #endif
 
   ret = __real_creat(path, mode);
@@ -337,7 +337,7 @@ int RECORDER_DECL(creat64)(const char *path, mode_t mode) {
   tm1 = recorder_wtime();
 
   if (__recorderfh != NULL)
-    fprintf(__recorderfh, "%.5f creat64 (%s, %d)", tm1, path, mode);
+    fprintf(__recorderfh, "%.5f creat64 (%s, %o)", tm1, path, mode);
 #endif
 
   ret = __real_creat64(path, mode);
@@ -367,7 +367,7 @@ int RECORDER_DECL(open64)(const char *path, int flags, ...) {
 #ifndef DISABLE_POSIX_TRACE
     tm1 = recorder_wtime();
     if (__recorderfh != NULL)
-      fprintf(__recorderfh, "%.5f open64 (%s, %d, %d)", tm1, path, flags, mode);
+      fprintf(__recorderfh, "%.5f open64 (%s, %d, %o)", tm1, path, flags, mode);
 #endif
 
     ret = __real_open64(path, flags, mode);
@@ -414,7 +414,7 @@ int RECORDER_DECL(open)(const char *path, int flags, ...) {
 #ifndef DISABLE_POSIX_TRACE
     tm1 = recorder_wtime();
     if (__recorderfh != NULL)
-      fprintf(__recorderfh, "%.5f open (%s, %d, %d)", tm1, path, flags, mode);
+      fprintf(__recorderfh, "%.5f open (%s, %d, %o)", tm1, path, flags, mode);
 #endif
 
     ret = __real_open(path, flags, mode);
@@ -455,7 +455,7 @@ FILE *RECORDER_DECL(fopen64)(const char *path, const char *mode) {
 #ifndef DISABLE_POSIX_TRACE
   tm1 = recorder_wtime();
   if (__recorderfh != NULL)
-    fprintf(__recorderfh, "%.5f fopen64 (%s)", tm1, path);
+    fprintf(__recorderfh, "%.5f fopen64 (%s, %s)", tm1, path, mode);
 
 #endif
 
@@ -485,7 +485,7 @@ FILE *RECORDER_DECL(fopen)(const char *path, const char *mode) {
 #ifndef DISABLE_POSIX_TRACE
   tm1 = recorder_wtime();
   if (__recorderfh != NULL)
-    fprintf(__recorderfh, "%.5f fopen (%s)", tm1, path);
+    fprintf(__recorderfh, "%.5f fopen (%s, %s)", tm1, path, mode);
 
 #endif
 
