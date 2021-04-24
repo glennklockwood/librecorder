@@ -1016,8 +1016,8 @@ int MPI_File_iread(MPI_File fh, void *buf, int count, MPI_Datatype datatype,
   tm1 = recorder_wtime();
   char *typename = type2name(datatype);
   if (__recorderfh != NULL)
-    fprintf(__recorderfh, "%.5f MPI_File_iread (%d,%d,%p,%d,%d,%p)", tm1, fh,
-            buf, count, typename, request);
+    fprintf(__recorderfh, "%.5f MPI_File_iread (%d,%p,%d,%s,%p)", tm1,
+        fh, buf, count, typename, request);
   free(typename);
 #endif
 
@@ -1040,7 +1040,7 @@ int MPI_File_iread_shared(MPI_File fh, void *buf, int count,
   tm1 = recorder_wtime();
   char *typename = type2name(datatype);
   if (__recorderfh != NULL)
-    fprintf(__recorderfh, "%.5f MPI_File_iread_shared (%d,%d,%p,%d,%d,%p)", tm1,
+    fprintf(__recorderfh, "%.5f MPI_File_iread_shared (%d,%d,%d,%d,%p)", tm1,
             fh, buf, count, typename, request);
   free(typename);
 #endif

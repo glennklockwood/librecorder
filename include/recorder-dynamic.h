@@ -94,6 +94,18 @@ RECORDER_EXTERN_DECL(PMPI_Allreduce, int, (void *sendbuf, void *recvbuf, int cou
 RECORDER_EXTERN_DECL(PMPI_Bcast, int, (void *buffer, int count, MPI_Datatype datatype, int root, MPI_Comm comm));
 RECORDER_EXTERN_DECL(PMPI_Comm_rank, int, (MPI_Comm comm, int *rank));
 RECORDER_EXTERN_DECL(PMPI_Comm_size, int, (MPI_Comm comm, int *size));
+
+
+RECORDER_EXTERN_DECL(PMPI_Barrier, int, (MPI_Comm comm));
+RECORDER_EXTERN_DECL(PMPI_Gather, int, (void *sbuf, int scount, MPI_Datatype stype, void *rbuf, int rcount, MPI_Datatype rtype, int root, MPI_Comm comm));
+RECORDER_EXTERN_DECL(PMPI_Scatter, int, (void *sbuf, int scount, MPI_Datatype stype, void *rbuf, int rcount, MPI_Datatype rtype, int root, MPI_Comm comm));
+RECORDER_EXTERN_DECL(PMPI_Gatherv, int, (void *sbuf, int scount, MPI_Datatype stype, void *rbuf, int *rcount, int *displs, MPI_Datatype rtype, int root, MPI_Comm comm));
+RECORDER_EXTERN_DECL(PMPI_Scatterv, int, (void *sbuf, int *scount, int *displa, MPI_Datatype stype, void *rbuf, int rcount, MPI_Datatype rtype, int root, MPI_Comm comm));
+RECORDER_EXTERN_DECL(PMPI_Allgatherv, int, (void *sbuf, int scount, MPI_Datatype stype, void *rbuf, int *rcount, int *displs, MPI_Datatype rtype, MPI_Comm comm));
+RECORDER_EXTERN_DECL(PMPI_Alltoall, int, (void *sbuf, int scount, MPI_Datatype stype, void *rbuf, int rcount, MPI_Datatype rtype, MPI_Comm comm));
+RECORDER_EXTERN_DECL(PMPI_Reduce_scatter, int, (void *sbuf, void *rbuf, int *rcounts, MPI_Datatype stype, MPI_Op op, MPI_Comm comm));
+
+
 RECORDER_EXTERN_DECL(PMPI_Scan, int, (void *sendbuf, void *recvbuf, int count, MPI_Datatype datatype, MPI_Op op, MPI_Comm comm));
 RECORDER_EXTERN_DECL(PMPI_Type_commit, int, (MPI_Datatype *datatype));
 RECORDER_EXTERN_DECL(PMPI_Type_contiguous, int, (int count, MPI_Datatype oldtype, MPI_Datatype *newtype));
