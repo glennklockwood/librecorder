@@ -41,10 +41,13 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #define _XOPEN_SOURCE 500
-#define _GNU_SOURCE /* for RTLD_NEXT */
+#define _GNU_SOURCE
 
 #include <stdlib.h>
 #include <stdio.h>
+#include <sys/types.h>
+#include <sys/stat.h>
+#include <limits.h>
 
 #include "mpi.h"
 #include "recorder.h"
@@ -61,6 +64,8 @@
   if (!(__real_##func)) {                                                      \
     fprintf(stderr, "Recorder failed to map symbol: %s\n", #func);              \
   }
+
+extern char *__progname;
 
 RECORDER_FORWARD_DECL(PMPI_File_close, int, (MPI_File * fh));
 RECORDER_FORWARD_DECL(PMPI_File_set_size, int, (MPI_File fh, MPI_Offset size));
@@ -297,6 +302,41 @@ void resolve_mpi_symbols(void) {
 }
 
 #endif
+
+void recorder_mpi_initialize(int *argc, char ***argv) {
+  int nprocs;
+  int rank;
+
+  RECORDER_MPI_CALL(PMPI_Comm_size)(MPI_COMM_WORLD, &nprocs);
+  RECORDER_MPI_CALL(PMPI_Comm_rank)(MPI_COMM_WORLD, &rank);
+
+  char *logfile_name;
+  char *logdir_name;
+  logfile_name = malloc(PATH_MAX);
+  logdir_name = malloc(PATH_MAX);
+  char cuser[L_cuserid] = {0};
+  cuserid(cuser);
+
+  sprintf(logdir_name, "%s_%s", cuser, __progname);
+  int status;
+  status = mkdir(logdir_name, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
+  sprintf(logfile_name, "%s/log.%d", logdir_name, rank);
+  __recorderfh = fopen(logfile_name, "w");
+  depth = 0;
+
+  printf(" logfile_name %s ,recorderfh %d\n", logfile_name, __recorderfh);
+
+  free(logfile_name);
+  free(logdir_name);
+
+  return;
+}
+
+void recorder_shutdown(int timing_flag) {
+  fclose(__recorderfh);
+
+  return;
+}
 
 int PMPI_Init(int *argc, char ***argv) {
   int ret;

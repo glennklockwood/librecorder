@@ -40,6 +40,9 @@
  * Prime Contract No. DE-AC02-05CH11231.
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+#define _XOPEN_SOURCE 500
+#define _GNU_SOURCE
+
 #include <stdio.h>
 #include <unistd.h>
 #include <sys/types.h>
@@ -54,7 +57,6 @@
 #include <sys/mman.h>
 #include <search.h>
 #include <assert.h>
-#define __USE_GNU
 #include <pthread.h>
 
 #include "recorder.h"
@@ -63,10 +65,7 @@
 typedef int64_t off64_t;
 #endif
 
-extern char *__progname_full;
-
 #ifdef RECORDER_PRELOAD
-#define __USE_GNU
 #include <dlfcn.h>
 #include <stdlib.h>
 

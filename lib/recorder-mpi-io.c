@@ -41,7 +41,7 @@
  * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 #define _XOPEN_SOURCE 500
-#define _GNU_SOURCE /* for tdestroy() */
+#define _GNU_SOURCE
 
 #define __D_MPI_REQUEST MPIO_Request
 
@@ -52,11 +52,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <time.h>
-#include <limits.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <sys/types.h>
-#include <sys/stat.h>
 #include <zlib.h>
 #include <assert.h>
 #include <search.h>
@@ -71,44 +68,32 @@
 #define CONST
 #endif
 
-extern char *__progname;
+#define LARGE_BUF_SIZE 1024
+
 FILE *__recorderfh;
 int depth;
 
-void recorder_mpi_initialize(int *argc, char ***argv) {
-  int nprocs;
-  int rank;
+void print_arr(const int *array, int array_size, char *string) {
+  char *tmp = (char *)malloc(sizeof(char) * LARGE_BUF_SIZE);
+  int i;
 
-  RECORDER_MPI_CALL(PMPI_Comm_size)(MPI_COMM_WORLD, &nprocs);
-  RECORDER_MPI_CALL(PMPI_Comm_rank)(MPI_COMM_WORLD, &rank);
+  char open_bracket[] = "{";
+  char close_bracket[] = "}";
+  char zero_str[] = "0";
+  strcpy(string, open_bracket);
+  for (i = 0; i < array_size - 1; i++) {
+    strcpy(tmp, zero_str);
+    sprintf(tmp, "%lld;", array[i]);
+    strcat(string, tmp);
+  }
+  strcpy(tmp, zero_str);
+  sprintf(tmp, "%lld", array[array_size - 1]);
+  strcat(string, tmp);
+  strcat(string, close_bracket);
 
-  char *logfile_name;
-  char *logdir_name;
-  logfile_name = malloc(PATH_MAX);
-  logdir_name = malloc(PATH_MAX);
-  char cuser[L_cuserid] = {0};
-  cuserid(cuser);
-
-  sprintf(logdir_name, "%s_%s", cuser, __progname);
-  int status;
-  status = mkdir(logdir_name, S_IRWXU | S_IRWXG | S_IROTH | S_IXOTH);
-  sprintf(logfile_name, "%s/log.%d", logdir_name, rank);
-  __recorderfh = fopen(logfile_name, "w");
-  depth = 0;
-
-  printf(" logfile_name %s ,recorderfh %d\n", logfile_name, __recorderfh);
-
-  free(logfile_name);
-  free(logdir_name);
-
-  return;
+  free(tmp);
 }
 
-void recorder_shutdown(int timing_flag) {
-  fclose(__recorderfh);
-
-  return;
-}
 
 int MPI_Comm_size(MPI_Comm comm, int *size) {
   int ret;
