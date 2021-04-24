@@ -358,18 +358,17 @@ int RECORDER_DECL(open64)(const char *path, int flags, ...) {
   double tm1, tm2;
 
   MAP_OR_FAIL(open64);
-#ifndef DISABLE_POSIX_TRACE
-  tm1 = recorder_wtime();
-
-  if (__recorderfh != NULL)
-    fprintf(__recorderfh, "%.5f open64 (%s, %d, %d)", tm1, path, flags);
-#endif
-
   if (flags & O_CREAT) {
     va_list arg;
     va_start(arg, flags);
     mode = va_arg(arg, int);
     va_end(arg);
+
+#ifndef DISABLE_POSIX_TRACE
+    tm1 = recorder_wtime();
+    if (__recorderfh != NULL)
+      fprintf(__recorderfh, "%.5f open64 (%s, %d, %d)", tm1, path, flags, mode);
+#endif
 
     ret = __real_open64(path, flags, mode);
 
@@ -380,6 +379,12 @@ int RECORDER_DECL(open64)(const char *path, int flags, ...) {
       fprintf(__recorderfh, " %d %.5f\n", ret, tm2 - tm1);
 #endif
   } else {
+#ifndef DISABLE_POSIX_TRACE
+    tm1 = recorder_wtime();
+    if (__recorderfh != NULL)
+      fprintf(__recorderfh, "%.5f open64 (%s, %d)", tm1, path, flags);
+#endif
+
     ret = __real_open64(path, flags);
 
 #ifndef DISABLE_POSIX_TRACE

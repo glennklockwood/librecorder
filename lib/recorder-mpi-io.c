@@ -222,7 +222,7 @@ int MPI_Gather(CONST void *sbuf, int scount, MPI_Datatype stype, void *rbuf,
   free(comm_name);
 #endif
 
-  ret = RECORDER_MPI_CALL(PMPI_Gather)(sbuf, scount, stype, rbuf, rcount, rtype,
+  ret = RECORDER_MPI_CALL(PMPI_Gather)((void*)sbuf, scount, stype, (void*)rbuf, rcount, rtype,
                                        root, comm);
 
 #ifndef DISABLE_MPIO_TRACE
@@ -256,7 +256,7 @@ int MPI_Scatter(CONST void *sbuf, int scount, MPI_Datatype stype, void *rbuf,
   free(comm_name);
 #endif
 
-  ret = RECORDER_MPI_CALL(PMPI_Scatter)(sbuf, scount, stype, rbuf, rcount,
+  ret = RECORDER_MPI_CALL(PMPI_Scatter)((void*)sbuf, scount, stype, (void*)rbuf, rcount,
                                         rtype, root, comm);
 
 #ifndef DISABLE_MPIO_TRACE
@@ -291,8 +291,8 @@ int MPI_Gatherv(CONST void *sbuf, int scount, MPI_Datatype stype, void *rbuf,
   free(comm_name);
 #endif
 
-  ret = RECORDER_MPI_CALL(PMPI_Gatherv)(sbuf, scount, stype, rbuf, rcount,
-                                        displs, rtype, root, comm);
+  ret = RECORDER_MPI_CALL(PMPI_Gatherv)((void*)sbuf, scount, stype, rbuf, (int*)rcount,
+                                        (int*)displs, rtype, root, comm);
 
 #ifndef DISABLE_MPIO_TRACE
   tm2 = recorder_wtime();
@@ -326,7 +326,7 @@ int MPI_Scatterv(CONST void *sbuf, CONST int *scount, CONST int *displa,
   free(comm_name);
 #endif
 
-  ret = RECORDER_MPI_CALL(PMPI_Scatterv)(sbuf, scount, displa, stype, rbuf,
+  ret = RECORDER_MPI_CALL(PMPI_Scatterv)((void*)sbuf, (int*)scount, (int*)displa, stype, rbuf,
                                          rcount, rtype, root, comm);
 
 #ifndef DISABLE_MPIO_TRACE
@@ -398,8 +398,8 @@ int MPI_Allgatherv(CONST void *sbuf, int scount, MPI_Datatype stype, void *rbuf,
   free(comm_name);
 #endif
 
-  ret = RECORDER_MPI_CALL(PMPI_Allgatherv)(sbuf, scount, stype, rbuf, rcount,
-                                           displs, rtype, comm);
+  ret = RECORDER_MPI_CALL(PMPI_Allgatherv)((void*)sbuf, scount, stype, rbuf, (int*)rcount,
+                                           (int*)displs, rtype, comm);
 
 #ifndef DISABLE_MPIO_TRACE
   tm2 = recorder_wtime();
@@ -432,7 +432,7 @@ int MPI_Alltoall(CONST void *sbuf, int scount, MPI_Datatype stype, void *rbuf,
   free(comm_name);
 #endif
 
-  ret = RECORDER_MPI_CALL(PMPI_Alltoall)(sbuf, scount, stype, rbuf, rcount,
+  ret = RECORDER_MPI_CALL(PMPI_Alltoall)((void*)sbuf, scount, stype, rbuf, rcount,
                                          rtype, comm);
 
 #ifndef DISABLE_MPIO_TRACE
@@ -528,7 +528,7 @@ int MPI_Reduce_scatter(CONST void *sbuf, void *rbuf, CONST int *rcounts,
   free(comm_name);
 #endif
 
-  ret = RECORDER_MPI_CALL(PMPI_Reduce_scatter)(sbuf, rbuf, rcounts, stype, op,
+  ret = RECORDER_MPI_CALL(PMPI_Reduce_scatter)((void*)sbuf, rbuf, (int*)rcounts, stype, op,
                                                comm);
 
 #ifndef DISABLE_MPIO_TRACE
