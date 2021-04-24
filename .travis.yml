@@ -1,0 +1,8 @@
+language: c
+before_install:
+    - test -n $CC && unset CC
+install:
+    - sudo apt-get -qq update
+    - sudo apt-get install -y openmpi-bin libopenmpi-dev
+script:
+    - make
