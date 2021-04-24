@@ -47,7 +47,6 @@
 #include <sys/types.h>
 #include <stdint.h>
 #include <mpi.h>
-#include "recorder-log-format.h"
 
 extern FILE* __recorderfh;
 extern int depth;
