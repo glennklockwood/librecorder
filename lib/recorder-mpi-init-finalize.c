@@ -215,6 +215,13 @@ RECORDER_FORWARD_DECL(PMPI_Type_get_envelope, int,
                       (MPI_Datatype datatype, int *num_integers,
                        int *num_addresses, int *num_datatypes, int *combiner));
 RECORDER_FORWARD_DECL(PMPI_Type_size, int, (MPI_Datatype datatype, int *size));
+RECORDER_FORWARD_DECL(PMPI_Type_create_darray, int, (int size, int rank, int ndims,
+                           int array_of_gsizes[],
+                           int array_of_distribs[],
+                           int array_of_dargs[],
+                           int array_of_psizes[], int order,
+                           MPI_Datatype oldtype, MPI_Datatype *newtype));
+
 
 char *comm2name(MPI_Comm comm) {
   char *tmp = (char *)malloc(1024);
@@ -276,6 +283,15 @@ void resolve_mpi_symbols(void) {
   MAP_OR_FAIL(PMPI_Allgather);
   MAP_OR_FAIL(PMPI_Init);
   MAP_OR_FAIL(PMPI_Init_thread);
+  MAP_OR_FAIL(PMPI_Gather);
+  MAP_OR_FAIL(PMPI_Scatter);
+  MAP_OR_FAIL(PMPI_Gatherv);
+  MAP_OR_FAIL(PMPI_Scatterv);
+  MAP_OR_FAIL(PMPI_Allgatherv);
+  MAP_OR_FAIL(PMPI_Alltoall);
+  MAP_OR_FAIL(PMPI_Reduce_scatter);
+  MAP_OR_FAIL(PMPI_Type_create_darray);
+  MAP_OR_FAIL(PMPI_Barrier);
 
   /*
    * These function are not intercepted but are used

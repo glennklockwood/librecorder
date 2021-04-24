@@ -118,6 +118,13 @@ RECORDER_EXTERN_DECL(PMPI_Reduce, int, (void *sendbuf, void *recvbuf, int count,
 RECORDER_EXTERN_DECL(PMPI_Type_get_envelope, int, (MPI_Datatype datatype, int *num_integers, int *num_addresses, int *num_datatypes, int *combiner));
 RECORDER_EXTERN_DECL(PMPI_Type_size, int, (MPI_Datatype datatype, int *size));
 
+RECORDER_EXTERN_DECL(PMPI_Type_create_darray, int, (int size, int rank, int ndims,
+                           int array_of_gsizes[],
+                           int array_of_distribs[],
+                           int array_of_dargs[],
+                           int array_of_psizes[], int order,
+                           MPI_Datatype oldtype, MPI_Datatype *newtype));
+
 #else
 
 #define RECORDER_MPI_CALL(func) func

@@ -145,7 +145,7 @@ int MPI_Comm_rank(MPI_Comm comm, int *rank) {
   return (ret);
 }
 
-int MPI_Comm_Barrier(MPI_Comm comm) {
+int MPI_Barrier(MPI_Comm comm) {
   int ret;
   double tm1, tm2;
 
@@ -215,14 +215,14 @@ int MPI_Gather(CONST void *sbuf, int scount, MPI_Datatype stype, void *rbuf,
 
   if (__recorderfh != NULL && depth == 1)
     fprintf(__recorderfh, "%.5f MPI_Gather (%p,%d,%s,%p,%d,%s,%d,%s)", tm1,
-            sbuf, scount, stype, rbuf, rcount, rtype, root, comm_name);
+            sbuf, scount, stype_name, rbuf, rcount, rtype_name, root, comm_name);
 
   free(stype_name);
   free(rtype_name);
   free(comm_name);
 #endif
 
-  ret = RECORDER_MPI_CALL(PMPI_Gather)((void*)sbuf, scount, stype, (void*)rbuf, rcount, rtype,
+  ret = RECORDER_MPI_CALL(PMPI_Gather)((void*)sbuf, scount, stype, rbuf, rcount, rtype,
                                        root, comm);
 
 #ifndef DISABLE_MPIO_TRACE
@@ -445,8 +445,8 @@ int MPI_Alltoall(CONST void *sbuf, int scount, MPI_Datatype stype, void *rbuf,
   return (ret);
 }
 
-int MPI_reduce(CONST void *sbuf, void *rbuf, int count, MPI_Datatype stype,
-               MPI_Op op, MPI_Comm comm) {
+int MPI_Reduce(CONST void *sbuf, void *rbuf, int count, MPI_Datatype stype,
+               MPI_Op op, int root, MPI_Comm comm) {
   int ret;
   double tm1, tm2;
 
@@ -457,14 +457,14 @@ int MPI_reduce(CONST void *sbuf, void *rbuf, int count, MPI_Datatype stype,
   char *type_name = type2name(stype);
 
   if (__recorderfh != NULL && depth == 1)
-    fprintf(__recorderfh, "%.5f MPI_reduce (%p,%p,%d,%s,%d,%s)", tm1, sbuf,
-            rbuf, count, type_name, op, comm_name);
+    fprintf(__recorderfh, "%.5f MPI_Reduce (%p,%p,%d,%s,%d,%d,%s)", tm1, sbuf,
+            rbuf, count, type_name, op, root, comm_name);
 
   free(type_name);
   free(comm_name);
 #endif
 
-  ret = RECORDER_MPI_CALL(PMPI_Allreduce)((void *)sbuf, rbuf, count, stype, op,
+  ret = RECORDER_MPI_CALL(PMPI_Reduce)((void *)sbuf, rbuf, count, stype, op, root,
                                           comm);
 
 #ifndef DISABLE_MPIO_TRACE
