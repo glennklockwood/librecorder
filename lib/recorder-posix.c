@@ -143,6 +143,8 @@ RECORDER_FORWARD_DECL(fwrite, size_t, (const void *ptr, size_t size,
 RECORDER_FORWARD_DECL(fseek, int, (FILE * stream, long offset, int whence));
 RECORDER_FORWARD_DECL(fsync, int, (int fd));
 RECORDER_FORWARD_DECL(fdatasync, int, (int fd));
+RECORDER_FORWARD_DECL(unlink, int, (const char *path));
+RECORDER_FORWARD_DECL(rmdir, int, (const char *path));
 
 static int recorder_mem_alignment = 1;
 
@@ -980,4 +982,50 @@ double recorder_wtime(void) {
   struct timeval time;
   gettimeofday(&time, NULL);
   return (time.tv_sec + ((double)time.tv_usec / 1000000));
+}
+
+int RECORDER_DECL(unlink)(const char *pathname) {
+  double tm1, tm2;
+  int ret;
+
+  MAP_OR_FAIL(unlink);
+#ifndef DISABLE_POSIX_TRACE
+  tm1 = recorder_wtime();
+  if (__recorderfh != NULL)
+    fprintf(__recorderfh, "%.5f unlink (%s)", tm1, pathname);
+#endif
+
+  ret = __real_unlink(pathname);
+
+#ifndef DISABLE_POSIX_TRACE
+  tm2 = recorder_wtime();
+
+  if (__recorderfh != NULL)
+    fprintf(__recorderfh, " %d %.5f\n", ret, tm2 - tm1);
+#endif
+
+  return (ret);
+}
+
+int RECORDER_DECL(rmdir)(const char *pathname) {
+  double tm1, tm2;
+  int ret;
+
+  MAP_OR_FAIL(rmdir);
+#ifndef DISABLE_POSIX_TRACE
+  tm1 = recorder_wtime();
+  if (__recorderfh != NULL)
+    fprintf(__recorderfh, "%.5f rmdir (%s)", tm1, pathname);
+#endif
+
+  ret = __real_rmdir(pathname);
+
+#ifndef DISABLE_POSIX_TRACE
+  tm2 = recorder_wtime();
+
+  if (__recorderfh != NULL)
+    fprintf(__recorderfh, " %d %.5f\n", ret, tm2 - tm1);
+#endif
+
+  return (ret);
 }
