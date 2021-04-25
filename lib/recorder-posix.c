@@ -104,6 +104,8 @@ RECORDER_FORWARD_DECL(creat, int, (const char *path, mode_t mode));
 RECORDER_FORWARD_DECL(creat64, int, (const char *path, mode_t mode));
 RECORDER_FORWARD_DECL(open, int, (const char *path, int flags, ...));
 RECORDER_FORWARD_DECL(open64, int, (const char *path, int flags, ...));
+RECORDER_FORWARD_DECL(__open_2, int, (const char *path, int oflag));
+RECORDER_FORWARD_DECL(openat, int, (int dirfd, const char *path, int flags, ...));
 RECORDER_FORWARD_DECL(close, int, (int fd));
 RECORDER_FORWARD_DECL(write, ssize_t, (int fd, const void *buf, size_t count));
 RECORDER_FORWARD_DECL(read, ssize_t, (int fd, void *buf, size_t count));
@@ -428,6 +430,29 @@ int RECORDER_DECL(open64)(const char *path, int flags, ...) {
   return (ret);
 }
 
+int RECORDER_DECL(__open_2)(const char *path, int oflag) {
+    int ret;
+    double tm1, tm2;
+
+    MAP_OR_FAIL(__open_2);
+#ifndef DISABLE_POSIX_TRACE
+    tm1 = recorder_wtime();
+    if (__recorderfh != NULL)
+        fprintf(__recorderfh, "%.5f __open_2 (%s, %d)", tm1, path, oflag);
+#endif
+
+    ret = __real___open_2(path, oflag);
+
+#ifndef DISABLE_POSIX_TRACE
+    tm2 = recorder_wtime();
+
+    if (__recorderfh != NULL)
+        fprintf(__recorderfh, " %d %.5f\n", ret, tm2 - tm1);
+#endif
+    return (ret);
+}
+
+
 int RECORDER_DECL(open)(const char *path, int flags, ...) {
   int mode = 0;
   int ret;
@@ -464,6 +489,61 @@ int RECORDER_DECL(open)(const char *path, int flags, ...) {
 #endif
 
   return (ret);
+}
+
+int RECORDER_DECL(openat)(int dirfd, const char *pathname, int flags, ...) {
+    mode_t mode = 0;
+    int ret;
+    double tm1, tm2;
+
+    MAP_OR_FAIL(openat);
+    if (flags & O_CREAT) {
+        va_list arg;
+        va_start(arg, flags);
+        mode = va_arg(arg, int);
+        va_end(arg);
+
+#ifndef DISABLE_POSIX_TRACE
+        tm1 = recorder_wtime();
+        if (__recorderfh != NULL)
+        {
+            if (dirfd == AT_FDCWD) {
+                fprintf(__recorderfh, "%.5f openat (AT_FDCWD, %s, %d, %o)", tm1, pathname, flags, mode);
+            }
+            else {
+                char *actual_filename = fd2name(dirfd);
+                fprintf(__recorderfh, "%.5f openat (%s, %s, %d, %o)", tm1, actual_filename, pathname, flags, mode);
+                free(actual_filename);
+            }
+#endif
+            ret = __real_openat(dirfd, pathname, flags, mode);
+        }
+    } else {
+#ifndef DISABLE_POSIX_TRACE
+        tm1 = recorder_wtime();
+        if (__recorderfh != NULL)
+        {
+            if (dirfd == AT_FDCWD) {
+                fprintf(__recorderfh, "%.5f openat (AT_FDCWD, %s, %d)", tm1, pathname, flags);
+            }
+            else {
+                char *actual_filename = fd2name(dirfd);
+                fprintf(__recorderfh, "%.5f openat (%s, %s, %d)", tm1, actual_filename, pathname, flags);
+                free(actual_filename);
+            }
+#endif
+            ret = __real_openat(dirfd, pathname, flags);
+        }
+    }
+
+#ifndef DISABLE_POSIX_TRACE
+    tm2 = recorder_wtime();
+
+    if (__recorderfh != NULL)
+        fprintf(__recorderfh, " %d %.5f\n", ret, tm2 - tm1);
+#endif
+
+    return (ret);
 }
 
 FILE *RECORDER_DECL(fopen64)(const char *path, const char *mode) {
@@ -1035,13 +1115,13 @@ int RECORDER_DECL(unlinkat)(int dirfd, const char *pathname, int flags) {
   tm1 = recorder_wtime();
   if (__recorderfh != NULL)
   {
-      char *actual_filename;
-      if (dirfd = AT_FDCWD) {
+      if (dirfd == AT_FDCWD) {
           fprintf(__recorderfh, "%.5f unlinkat (AT_FDCWD, %s, %o)", tm1, pathname, flags);
       }
       else {
-          actual_filename = fd2name(dirfd);
+          char *actual_filename = fd2name(dirfd);
           fprintf(__recorderfh, "%.5f unlinkat (%s, %s, %o)", tm1, actual_filename, pathname, flags);
+          free(actual_filename);
       }
   }
 #endif
@@ -1114,13 +1194,13 @@ int RECORDER_DECL(mkdirat)(int dirfd, const char *pathname, mode_t mode) {
   tm1 = recorder_wtime();
   if (__recorderfh != NULL)
   {
-      char *actual_filename;
-      if (dirfd = AT_FDCWD) {
+      if (dirfd == AT_FDCWD) {
           fprintf(__recorderfh, "%.5f mkdirat (AT_FDCWD, %s, %o)", tm1, pathname, mode);
       }
       else {
-          actual_filename = fd2name(dirfd);
+          char *actual_filename = fd2name(dirfd);
           fprintf(__recorderfh, "%.5f mkdirat (%s, %s, %o)", tm1, actual_filename, pathname, mode);
+          free(actual_filename);
       }
   }
 #endif
