@@ -1,0 +1,10 @@
+version: "3"
+services:
+  dev-shell:
+    image: "librecorder"
+    working_dir: /data
+    volumes:
+      - $PWD:/data/librecorder
+    stdin_open: true
+    tty: true
+    entrypoint: /bin/bash
