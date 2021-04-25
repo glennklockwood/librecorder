@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#
+# Helps identify the metadata patterns of a benchmark like mdtest.
+#
+
+# all mdtest file paths have "out" in their name.  Replace this for some common
+# string that appears in all files being tested by the benchmark you're tracing.
+COMMON_OUTPUT_NAME="out"
+
+egrep '(\/'$COMMON_OUTPUT_NAME'\/|Barrier)' "$1" | cut -d ' ' -f 2- | cut -d ')' -f 1 | sed -e 's/(//' | cut -d ',' -f 1 | uniq
