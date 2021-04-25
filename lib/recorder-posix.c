@@ -145,6 +145,7 @@ RECORDER_FORWARD_DECL(fdatasync, int, (int fd));
 RECORDER_FORWARD_DECL(unlink, int, (const char *path));
 RECORDER_FORWARD_DECL(rmdir, int, (const char *path));
 RECORDER_FORWARD_DECL(mkdir, int, (const char *path, mode_t mode));
+RECORDER_FORWARD_DECL(rename, int, (const char *old, const char *new));
 
 static int recorder_mem_alignment = 1;
 
@@ -1042,6 +1043,29 @@ int RECORDER_DECL(mkdir)(const char *path, mode_t mode) {
 #endif
 
   ret = __real_mkdir(path, mode);
+
+#ifndef DISABLE_POSIX_TRACE
+  tm2 = recorder_wtime();
+
+  if (__recorderfh != NULL)
+    fprintf(__recorderfh, " %d %.5f\n", ret, tm2 - tm1);
+#endif
+
+  return (ret);
+}
+
+int RECORDER_DECL(rename)(const char *old, const char *new) {
+  double tm1, tm2;
+  int ret;
+
+  MAP_OR_FAIL(rename);
+#ifndef DISABLE_POSIX_TRACE
+  tm1 = recorder_wtime();
+  if (__recorderfh != NULL)
+    fprintf(__recorderfh, "%.5f rename (%s, %s)", tm1, old, new);
+#endif
+
+  ret = __real_rename(old, new);
 
 #ifndef DISABLE_POSIX_TRACE
   tm2 = recorder_wtime();
