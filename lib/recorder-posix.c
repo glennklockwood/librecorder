@@ -146,8 +146,10 @@ RECORDER_FORWARD_DECL(fseek, int, (FILE * stream, long offset, int whence));
 RECORDER_FORWARD_DECL(fsync, int, (int fd));
 RECORDER_FORWARD_DECL(fdatasync, int, (int fd));
 RECORDER_FORWARD_DECL(unlink, int, (const char *path));
+RECORDER_FORWARD_DECL(unlinkat, int, (int dirfd, const char *pathname, int flags));
 RECORDER_FORWARD_DECL(rmdir, int, (const char *path));
 RECORDER_FORWARD_DECL(mkdir, int, (const char *path, mode_t mode));
+RECORDER_FORWARD_DECL(mkdirat, int, (int dirfd, const char *pathname, mode_t mode));
 RECORDER_FORWARD_DECL(rename, int, (const char *old, const char *new));
 RECORDER_FORWARD_DECL(mknod, int, (const char *path, mode_t mode, dev_t dev));
 
@@ -262,7 +264,6 @@ int RECORDER_DECL(fsync)(int fd) {
   char *actual_filename = fd2name(fd);
   if (__recorderfh != NULL)
     fprintf(__recorderfh, "%.5f fsync (%s)", tm1, actual_filename);
-
 #endif
 
   ret = __real_fsync(fd);
@@ -1025,6 +1026,39 @@ int RECORDER_DECL(unlink)(const char *pathname) {
   return (ret);
 }
 
+int RECORDER_DECL(unlinkat)(int dirfd, const char *pathname, int flags) {
+  double tm1, tm2;
+  int ret;
+
+  MAP_OR_FAIL(unlinkat);
+#ifndef DISABLE_POSIX_TRACE
+  tm1 = recorder_wtime();
+  if (__recorderfh != NULL)
+  {
+      char *actual_filename;
+      if (dirfd = AT_FDCWD) {
+          fprintf(__recorderfh, "%.5f unlinkat (AT_FDCWD, %s, %o)", tm1, pathname, flags);
+      }
+      else {
+          actual_filename = fd2name(dirfd);
+          fprintf(__recorderfh, "%.5f unlinkat (%s, %s, %o)", tm1, actual_filename, pathname, flags);
+      }
+  }
+#endif
+
+  ret = __real_unlinkat(dirfd, pathname, flags);
+
+#ifndef DISABLE_POSIX_TRACE
+  tm2 = recorder_wtime();
+
+  if (__recorderfh != NULL)
+    fprintf(__recorderfh, " %d %.5f\n", ret, tm2 - tm1);
+#endif
+
+  return (ret);
+}
+
+
 int RECORDER_DECL(rmdir)(const char *pathname) {
   double tm1, tm2;
   int ret;
@@ -1060,6 +1094,38 @@ int RECORDER_DECL(mkdir)(const char *path, mode_t mode) {
 #endif
 
   ret = __real_mkdir(path, mode);
+
+#ifndef DISABLE_POSIX_TRACE
+  tm2 = recorder_wtime();
+
+  if (__recorderfh != NULL)
+    fprintf(__recorderfh, " %d %.5f\n", ret, tm2 - tm1);
+#endif
+
+  return (ret);
+}
+
+int RECORDER_DECL(mkdirat)(int dirfd, const char *pathname, mode_t mode) {
+  double tm1, tm2;
+  int ret;
+
+  MAP_OR_FAIL(mkdirat);
+#ifndef DISABLE_POSIX_TRACE
+  tm1 = recorder_wtime();
+  if (__recorderfh != NULL)
+  {
+      char *actual_filename;
+      if (dirfd = AT_FDCWD) {
+          fprintf(__recorderfh, "%.5f mkdirat (AT_FDCWD, %s, %o)", tm1, pathname, mode);
+      }
+      else {
+          actual_filename = fd2name(dirfd);
+          fprintf(__recorderfh, "%.5f mkdirat (%s, %s, %o)", tm1, actual_filename, pathname, mode);
+      }
+  }
+#endif
+
+  ret = __real_mkdirat(dirfd, pathname, mode);
 
 #ifndef DISABLE_POSIX_TRACE
   tm2 = recorder_wtime();
