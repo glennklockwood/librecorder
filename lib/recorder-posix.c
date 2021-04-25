@@ -57,6 +57,9 @@
 #include <sys/mman.h>
 #include <search.h>
 #include <assert.h>
+#ifdef ENABLE_DUMP_CALL_STACK
+#include <execinfo.h>
+#endif
 
 #include "recorder.h"
 
@@ -156,6 +159,28 @@ static char *exclusions[] = {"/etc/",  "/dev/",  "/usr/", "/bin/",
                              "/sys/",  "/proc/", NULL};
 
 static double posix_wtime(void);
+
+#ifdef ENABLE_DUMP_CALL_STACK
+void dump_call_stack(void)
+{
+        /* compile with -rdynamic to get symbols */
+        char buf[4096];
+        void *array[10];
+        char **strings;
+
+        if (__recorderfh != NULL) {
+                int size = backtrace(array, 10);
+                if ((strings = backtrace_symbols(array, size)))
+                {
+                        fprintf(__recorderfh, "  Trace:\n");
+                        for (int i = 0; i < size; i++)
+                                fprintf(__recorderfh, "    %s\n", strings[i]);
+                }
+                free(strings);
+        }
+        return;
+}
+#endif
 
 char *fd2name(int fd) {
   size_t len = 256;
@@ -420,23 +445,15 @@ int RECORDER_DECL(open)(const char *path, int flags, ...) {
     if (__recorderfh != NULL)
       fprintf(__recorderfh, "%.5f open (%s, %d, %o)", tm1, path, flags, mode);
 #endif
-
     ret = __real_open(path, flags, mode);
-
-#ifndef DISABLE_POSIX_TRACE
-    tm2 = recorder_wtime();
-
-    if (__recorderfh != NULL)
-      fprintf(__recorderfh, " %d %.5f\n", ret, tm2 - tm1);
-#endif
   } else {
 #ifndef DISABLE_POSIX_TRACE
     tm1 = recorder_wtime();
     if (__recorderfh != NULL)
       fprintf(__recorderfh, "%.5f open (%s, %d)", tm1, path, flags);
 #endif
-
     ret = __real_open(path, flags);
+  }
 
 #ifndef DISABLE_POSIX_TRACE
     tm2 = recorder_wtime();
@@ -444,7 +461,6 @@ int RECORDER_DECL(open)(const char *path, int flags, ...) {
     if (__recorderfh != NULL)
       fprintf(__recorderfh, " %d %.5f\n", ret, tm2 - tm1);
 #endif
-  }
 
   return (ret);
 }
@@ -1089,7 +1105,7 @@ int RECORDER_DECL(mknod)(const char *path, mode_t mode, dev_t dev) {
     fprintf(__recorderfh, "%.5f mknod (%s, %d, %ju)", tm1, path, mode, (uintmax_t)dev);
 #endif
 
-  ret = __real_mknode(path, mode, dev);
+  ret = __real_mknod(path, mode, dev);
 
 #ifndef DISABLE_POSIX_TRACE
   tm2 = recorder_wtime();
