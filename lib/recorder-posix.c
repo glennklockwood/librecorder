@@ -57,7 +57,6 @@
 #include <sys/mman.h>
 #include <search.h>
 #include <assert.h>
-#include <pthread.h>
 
 #include "recorder.h"
 
