@@ -54,7 +54,6 @@
 #include <time.h>
 #include <unistd.h>
 #include <pthread.h>
-#include <zlib.h>
 #include <assert.h>
 #include <search.h>
 
