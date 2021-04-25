@@ -18,12 +18,16 @@ FROM centos:7
 RUN yum install -y gcc vim \
                    mpich mpich-devel \
                    git make \
-                   pkg-config autoconf automake
+                   pkg-config autoconf automake && \
+                   yum clean all && \
+                   rm -rf /var/cache/yum
 
 ENV PATH=/usr/lib64/mpich/bin:$PATH
 
 WORKDIR /data
 
+# Check version of librecorder and rebuild if necessary
+ADD https://api.github.com/repos/glennklockwood/librecorder/git/refs/heads/main version.json
 RUN git clone --depth 1 https://github.com/glennklockwood/librecorder.git && \
     cd librecorder && \
     make CC=mpicc && \
@@ -31,9 +35,12 @@ RUN git clone --depth 1 https://github.com/glennklockwood/librecorder.git && \
 
 ENV LD_LIBRARY_PATH=/usr/local/lib64
 
+# Build IOR against librecorder
 RUN git clone --depth 1 https://github.com/hpc/ior.git && \
     mkdir -p ior/build && \
     cd ior && \
     autoreconf -ivf && \
     cd build && \
     ../configure CC=mpicc --prefix=/usr/local && make LDFLAGS=-lrecorder && make install
+
+
