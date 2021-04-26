@@ -1,3 +1,4 @@
+# docker-compose run --rm dev-shell
 version: "3"
 services:
   dev-shell:
