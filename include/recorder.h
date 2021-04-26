@@ -43,17 +43,17 @@
 #ifndef __RECORDER_H
 #define __RECORDER_H
 
-#include <unistd.h>
-#include <sys/types.h>
-#include <stdint.h>
 #include <mpi.h>
+#include <stdint.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 extern FILE* __recorderfh;
 extern int depth;
 
-char * comm2name(MPI_Comm comm);
-char * type2name(MPI_Datatype type);
-char * makename(MPI_Datatype *type);
+char* comm2name(MPI_Comm comm);
+char* type2name(MPI_Datatype type);
+char* makename(MPI_Datatype* type);
 double recorder_wtime(void);
 
 #endif /* __RECORDER_H */
