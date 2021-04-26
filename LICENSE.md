@@ -5,6 +5,8 @@ This code is an amalgamation of software authored as a part of [Darshan][], work
 performed by The HDF5 Group, work performed at Lawrence Berkeley National
 Laboratory, and code authored by Glenn K. Lockwood.
 
+[Darshan]: https://www.mcs.anl.gov/research/projects/darshan/
+
 The HDF5 Group
 --------------------------------------------------------------------------------
 
