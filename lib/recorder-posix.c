@@ -100,58 +100,123 @@ extern double (*__real_PMPI_Wtime)(void);
 
 #endif
 
-RECORDER_FORWARD_DECL(creat, int, (const char* path, mode_t mode));
-RECORDER_FORWARD_DECL(creat64, int, (const char* path, mode_t mode));
+/*
+ * POSIX
+ */
 RECORDER_FORWARD_DECL(open, int, (const char* path, int flags, ...));
 RECORDER_FORWARD_DECL(open64, int, (const char* path, int flags, ...));
 RECORDER_FORWARD_DECL(__open_2, int, (const char* path, int oflag));
 RECORDER_FORWARD_DECL(openat, int, (int dirfd, const char* path, int flags, ...));
 RECORDER_FORWARD_DECL(openat64, int, (int dirfd, const char* path, int flags, ...));
-RECORDER_FORWARD_DECL(close, int, (int fd));
-RECORDER_FORWARD_DECL(write, ssize_t, (int fd, const void* buf, size_t count));
+RECORDER_FORWARD_DECL(creat, int, (const char* path, mode_t mode));
+RECORDER_FORWARD_DECL(creat64, int, (const char* path, mode_t mode));
+// DARSHAN_FORWARD_DECL(dup, int, (int oldfd));
+// DARSHAN_FORWARD_DECL(dup2, int, (int oldfd, int newfd));
+// DARSHAN_FORWARD_DECL(dup3, int, (int oldfd, int newfd, int flags));
+// DARSHAN_FORWARD_DECL(fileno, int, (FILE *stream));
+// DARSHAN_FORWARD_DECL(mkstemp, int, (char *template));
+// DARSHAN_FORWARD_DECL(mkostemp, int, (char *template, int flags));
+// DARSHAN_FORWARD_DECL(mkstemps, int, (char *template, int suffixlen));
+// DARSHAN_FORWARD_DECL(mkostemps, int, (char *template, int suffixlen, int flags));
 RECORDER_FORWARD_DECL(read, ssize_t, (int fd, void* buf, size_t count));
-RECORDER_FORWARD_DECL(lseek, off_t, (int fd, off_t offset, int whence));
-RECORDER_FORWARD_DECL(lseek64, off64_t, (int fd, off64_t offset, int whence));
+RECORDER_FORWARD_DECL(write, ssize_t, (int fd, const void* buf, size_t count));
 RECORDER_FORWARD_DECL(pread, ssize_t,
     (int fd, void* buf, size_t count, off_t offset));
-RECORDER_FORWARD_DECL(pread64, ssize_t,
-    (int fd, void* buf, size_t count, off64_t offset));
 RECORDER_FORWARD_DECL(pwrite, ssize_t,
     (int fd, const void* buf, size_t count, off_t offset));
+RECORDER_FORWARD_DECL(pread64, ssize_t,
+    (int fd, void* buf, size_t count, off64_t offset));
 RECORDER_FORWARD_DECL(pwrite64, ssize_t,
     (int fd, const void* buf, size_t count, off64_t offset));
 RECORDER_FORWARD_DECL(readv, ssize_t,
     (int fd, const struct iovec* iov, int iovcnt));
+// #ifdef HAVE_PREADV
+//     DARSHAN_FORWARD_DECL(preadv, ssize_t, (int fd, const struct iovec *iov, int iovcnt, off_t offset));
+//     DARSHAN_FORWARD_DECL(preadv64, ssize_t, (int fd, const struct iovec *iov, int iovcnt, off64_t offset));
+// #endif
+// #ifdef HAVE_PREADV2
+//     DARSHAN_FORWARD_DECL(preadv2, ssize_t, (int fd, const struct iovec *iov, int iovcnt, off_t offset, int flags));
+//     DARSHAN_FORWARD_DECL(preadv64v2, ssize_t, (int fd, const struct iovec *iov, int iovcnt, off64_t offset, int flags));
+// #endif
 RECORDER_FORWARD_DECL(writev, ssize_t,
     (int fd, const struct iovec* iov, int iovcnt));
-RECORDER_FORWARD_DECL(__fxstat, int, (int vers, int fd, struct stat* buf));
-RECORDER_FORWARD_DECL(__fxstat64, int, (int vers, int fd, struct stat64* buf));
-RECORDER_FORWARD_DECL(__lxstat, int,
-    (int vers, const char* path, struct stat* buf));
-RECORDER_FORWARD_DECL(__lxstat64, int,
-    (int vers, const char* path, struct stat64* buf));
+// #ifdef HAVE_PWRITEV
+//     DARSHAN_FORWARD_DECL(pwritev, ssize_t, (int fd, const struct iovec *iov, int iovcnt, off_t offset));
+//     DARSHAN_FORWARD_DECL(pwritev64, ssize_t, (int fd, const struct iovec *iov, int iovcnt, off64_t offset));
+// #endif
+// #ifdef HAVE_PWRITEV2
+//     DARSHAN_FORWARD_DECL(pwritev2, ssize_t, (int fd, const struct iovec *iov, int iovcnt, off_t offset, int flags));
+//     DARSHAN_FORWARD_DECL(pwritev64v2, ssize_t, (int fd, const struct iovec *iov, int iovcnt, off64_t offset, int flags));
+// #endif
+RECORDER_FORWARD_DECL(lseek, off_t, (int fd, off_t offset, int whence));
+RECORDER_FORWARD_DECL(lseek64, off64_t, (int fd, off64_t offset, int whence));
 RECORDER_FORWARD_DECL(__xstat, int,
     (int vers, const char* path, struct stat* buf));
 RECORDER_FORWARD_DECL(__xstat64, int,
     (int vers, const char* path, struct stat64* buf));
+RECORDER_FORWARD_DECL(__lxstat, int,
+    (int vers, const char* path, struct stat* buf));
+RECORDER_FORWARD_DECL(__lxstat64, int,
+    (int vers, const char* path, struct stat64* buf));
+RECORDER_FORWARD_DECL(__fxstat, int, (int vers, int fd, struct stat* buf));
+RECORDER_FORWARD_DECL(__fxstat64, int, (int vers, int fd, struct stat64* buf));
 RECORDER_FORWARD_DECL(mmap, void*, (void* addr, size_t length, int prot, int flags, int fd, off_t offset));
 RECORDER_FORWARD_DECL(mmap64, void*, (void* addr, size_t length, int prot, int flags, int fd, off64_t offset));
-RECORDER_FORWARD_DECL(fopen, FILE*, (const char* path, const char* mode));
-RECORDER_FORWARD_DECL(fopen64, FILE*, (const char* path, const char* mode));
-RECORDER_FORWARD_DECL(fclose, int, (FILE * fp));
-RECORDER_FORWARD_DECL(fread, size_t,
-    (void* ptr, size_t size, size_t nmemb, FILE* stream));
-RECORDER_FORWARD_DECL(fwrite, size_t, (const void* ptr, size_t size, size_t nmemb, FILE* stream));
-RECORDER_FORWARD_DECL(fseek, int, (FILE * stream, long offset, int whence));
 RECORDER_FORWARD_DECL(fsync, int, (int fd));
 RECORDER_FORWARD_DECL(fdatasync, int, (int fd));
+RECORDER_FORWARD_DECL(close, int, (int fd));
+// DARSHAN_FORWARD_DECL(aio_read, int, (struct aiocb *aiocbp));
+// DARSHAN_FORWARD_DECL(aio_write, int, (struct aiocb *aiocbp));
+// DARSHAN_FORWARD_DECL(aio_read64, int, (struct aiocb64 *aiocbp));
+// DARSHAN_FORWARD_DECL(aio_write64, int, (struct aiocb64 *aiocbp));
+// DARSHAN_FORWARD_DECL(aio_return, ssize_t, (struct aiocb *aiocbp));
+// DARSHAN_FORWARD_DECL(aio_return64, ssize_t, (struct aiocb64 *aiocbp));
+// DARSHAN_FORWARD_DECL(lio_listio, int, (int mode, struct aiocb *const aiocb_list[], int nitems, struct sigevent *sevp));
+// DARSHAN_FORWARD_DECL(lio_listio64, int, (int mode, struct aiocb64 *const aiocb_list[], int nitems, struct sigevent *sevp));
+RECORDER_FORWARD_DECL(rename, int, (const char* old, const char* new));
 RECORDER_FORWARD_DECL(unlink, int, (const char* path));
 RECORDER_FORWARD_DECL(unlinkat, int, (int dirfd, const char* pathname, int flags));
 RECORDER_FORWARD_DECL(rmdir, int, (const char* path));
 RECORDER_FORWARD_DECL(mkdir, int, (const char* path, mode_t mode));
 RECORDER_FORWARD_DECL(mkdirat, int, (int dirfd, const char* pathname, mode_t mode));
-RECORDER_FORWARD_DECL(rename, int, (const char* old, const char* new));
 RECORDER_FORWARD_DECL(mknod, int, (const char* path, mode_t mode, dev_t dev));
+
+/*
+ *  STDIO
+ */
+RECORDER_FORWARD_DECL(fopen, FILE*, (const char* path, const char* mode));
+RECORDER_FORWARD_DECL(fopen64, FILE*, (const char* path, const char* mode));
+// DARSHAN_FORWARD_DECL(fdopen, FILE*, (int fd, const char *mode));
+// DARSHAN_FORWARD_DECL(freopen, FILE*, (const char *path, const char *mode, FILE *stream));
+// DARSHAN_FORWARD_DECL(freopen64, FILE*, (const char *path, const char *mode, FILE *stream));
+RECORDER_FORWARD_DECL(fclose, int, (FILE * fp));
+// DARSHAN_FORWARD_DECL(fflush, int, (FILE *fp));
+RECORDER_FORWARD_DECL(fwrite, size_t, (const void* ptr, size_t size, size_t nmemb, FILE* stream));
+// DARSHAN_FORWARD_DECL(fputc, int, (int c, FILE *stream));
+// DARSHAN_FORWARD_DECL(putw, int, (int w, FILE *stream));
+// DARSHAN_FORWARD_DECL(fputs, int, (const char *s, FILE *stream));
+// DARSHAN_FORWARD_DECL(fprintf, int, (FILE *stream, const char *format, ...));
+// DARSHAN_FORWARD_DECL(printf, int, (const char *format, ...));
+// DARSHAN_FORWARD_DECL(vfprintf, int, (FILE *stream, const char *format, va_list));
+// DARSHAN_FORWARD_DECL(vprintf, int, (const char *format, va_list));
+RECORDER_FORWARD_DECL(fread, size_t,
+    (void* ptr, size_t size, size_t nmemb, FILE* stream));
+// DARSHAN_FORWARD_DECL(fgetc, int, (FILE *stream));
+// DARSHAN_FORWARD_DECL(getw, int, (FILE *stream));
+// DARSHAN_FORWARD_DECL(_IO_getc, int, (FILE *stream));
+// DARSHAN_FORWARD_DECL(_IO_putc, int, (int, FILE *stream));
+// DARSHAN_FORWARD_DECL(fscanf, int, (FILE *stream, const char *format, ...));
+// #ifndef HAVE_FSCANF_REDIRECT
+// DARSHAN_FORWARD_DECL(__isoc99_fscanf, int, (FILE *stream, const char *format, ...));
+// #endif
+// DARSHAN_FORWARD_DECL(vfscanf, int, (FILE *stream, const char *format, va_list ap));
+// DARSHAN_FORWARD_DECL(fgets, char*, (char *s, int size, FILE *stream));
+RECORDER_FORWARD_DECL(fseek, int, (FILE * stream, long offset, int whence));
+// DARSHAN_FORWARD_DECL(fseeko, int, (FILE *stream, off_t offset, int whence));
+// DARSHAN_FORWARD_DECL(fseeko64, int, (FILE *stream, off64_t offset, int whence));
+// DARSHAN_FORWARD_DECL(fsetpos, int, (FILE *stream, const fpos_t *pos));
+// DARSHAN_FORWARD_DECL(fsetpos64, int, (FILE *stream, const fpos64_t *pos));
+// DARSHAN_FORWARD_DECL(rewind, void, (FILE *stream));
 
 #ifdef ENABLE_DUMP_CALL_STACK
 void dump_call_stack(void)

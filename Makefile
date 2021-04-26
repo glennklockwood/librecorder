@@ -2,7 +2,7 @@
 
 INCL_DEPS = include/recorder.h include/recorder-dynamic.h
 
-CFLAGS_SHARED = -fPIC -I./include -shared -DRECORDER_PRELOAD
+CFLAGS_SHARED = -fPIC -I./include -shared -DRECORDER_PRELOAD -std=c99
 
 lib/librecorder.so: lib/recorder-mpi-io.po lib/recorder-mpi-init-finalize.po lib/recorder-posix.po
 	$(CC) $(CFLAGS) $(CFLAGS_SHARED) $(LDFLAGS) -ldl -o $@ $^ -lrt
