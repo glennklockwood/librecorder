@@ -1034,9 +1034,12 @@ size_t RECORDER_DECL(fread)(void* ptr, size_t size, size_t nmemb,
 
 #ifndef DISABLE_POSIX_TRACE
     tm1 = recorder_wtime();
-    if (__recorderfh != NULL)
-        fprintf(__recorderfh, "%.5f fread (ptr, %zu, %zu, %d)", tm1, size, nmemb,
-            fileno(stream));
+    if (__recorderfh != NULL) {
+        char* path = fd2name(fileno(stream));
+        fprintf(__recorderfh, "%.5f fread (ptr, %zu, %zu, %s)", tm1, size, nmemb,
+            path);
+        free(path);
+    }
 
 #endif
 
@@ -1123,8 +1126,10 @@ size_t RECORDER_DECL(fwrite)(const void* ptr, size_t size, size_t nmemb,
     tm1 = recorder_wtime();
 
     if (__recorderfh != NULL) {
-        fprintf(__recorderfh, "%.5f fwrite (%p, %zu, %zu, %d)", tm1,
-            ptr, size, nmemb, fileno(stream));
+        char* path = fd2name(fileno(stream));
+        fprintf(__recorderfh, "%.5f fwrite (%p, %zu, %zu, %s)", tm1,
+            ptr, size, nmemb, path);
+        free(path);
     }
 #endif
 
