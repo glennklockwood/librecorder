@@ -7,4 +7,4 @@
 # string that appears in all files being tested by the benchmark you're tracing.
 COMMON_OUTPUT_NAME="out"
 
-egrep '(\/'$COMMON_OUTPUT_NAME'\/|Barrier)' "$1" | cut -d ' ' -f 2- | cut -d ')' -f 1 | sed -e 's/(//' | uniq
+egrep '(\/'$COMMON_OUTPUT_NAME'\/|Barrier)' $@ | cut -d ' ' -f 2- | cut -d ')' -f 1 | sed -e 's/(//' | uniq
