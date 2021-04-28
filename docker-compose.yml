@@ -3,9 +3,9 @@ version: "3"
 services:
   dev-shell:
     image: "librecorder"
-    working_dir: /data
+    working_dir: /work
     volumes:
-      - $PWD:/data/librecorder
+      - $PWD:/work/librecorder
     stdin_open: true
     tty: true
     entrypoint: /bin/bash

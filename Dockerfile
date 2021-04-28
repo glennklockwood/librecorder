@@ -45,5 +45,3 @@ RUN git clone --depth 1 https://github.com/hpc/ior.git && \
     autoreconf -ivf && \
     cd build && \
     ../configure CC=mpicc --prefix=/usr/local && make LDFLAGS=-lrecorder && make install
-
-
