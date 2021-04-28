@@ -6,11 +6,15 @@
 #
 #   docker run -it --rm librecorder /bin/bash
 #
+# or docker-compose if you want to bindmount . instead of copy it:
+#
+#   docker-compose run --rm dev-shell
+#
 # Run IOR within container:
 #
 #   mpirun -n 1 /usr/local/bin/ior
 #
-# This will generate recorder logs in /data/root_ior
+# This will generate recorder logs in /work/root_ior
 #
 
 FROM centos:7
@@ -24,14 +28,13 @@ RUN yum install -y gcc vim \
 
 ENV PATH=/usr/lib64/mpich/bin:$PATH
 
-WORKDIR /data
+WORKDIR /work
 
 # Check version of librecorder and rebuild if necessary
-ADD https://api.github.com/repos/glennklockwood/librecorder/git/refs/heads/main version.json
-RUN git clone --depth 1 https://github.com/glennklockwood/librecorder.git && \
-    cd librecorder && \
+COPY . ./librecorder
+RUN cd librecorder && \
     make CC=mpicc && \
-    cp lib/librecorder.so /usr/local/lib64
+    ln -s /work/librecorder/lib/librecorder.so /usr/local/lib64
 
 ENV LD_LIBRARY_PATH=/usr/local/lib64
 
